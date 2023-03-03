@@ -1,2 +1,16 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+
+<script>
+    import Keno from "../components/Keno.svelte";
+</script>
+
+<div class="container center-h" style="margin-top: 4rem;">
+    <div>
+        <h1>Welcome to crypto Keno</h1>
+        <div class="center-h mt-lg">
+            <Keno/>
+        </div>
+    </div>
+</div>
+
+
+

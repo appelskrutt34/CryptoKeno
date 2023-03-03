@@ -1,0 +1,41 @@
+@import "./button.css";
+
+* {
+  --gray: rgb(23, 23, 23);
+  --lightgray: rgb(90, 90, 90);
+  --green1: #132a13;
+  --green2: #31572c;
+  --green3: #4f772d;
+  --green4: #90a955;
+  --green5: #ecf39e;
+}
+
+body {
+  color: white;
+  background-color: var(--gray);
+  font-family: "Poppins", sans-serif;
+  width: 100%;
+  height: 100%;
+}
+
+.center-v {
+  display: flex;
+  align-items: center;
+}
+.center-h {
+  display: flex;
+  justify-content: center;
+}
+.mt-sm {
+  margin-top: 1rem;
+}
+.mt-md {
+  margin-top: 2rem;
+}
+.mt-lg {
+  margin-top: 4rem;
+}
+
+.active-number {
+  background-color: var(--green3) !important;
+}
