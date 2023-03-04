@@ -1,50 +1,40 @@
 <script>
-    import { contract, web3 } from "../stores/web3";
+    import { contract,web3 } from "../stores/web3";
 
-    let chosenNumbers = [];
-    const MAX_PICK = 10;
+    const MAX_PICK = 5;
+    let numbers = "";
 
     const onNumberPick = (e, i) => {
-        if(chosenNumbers.includes(i)) {
-            chosenNumbers = chosenNumbers.filter(number => number != i);
+        if(numbers.includes(i)) {
+            numbers = numbers.replace(i,"");
         }
-        else if(chosenNumbers.length == MAX_PICK) return;
+        else if(numbers.length == MAX_PICK) return;
         else {
-            chosenNumbers.push(i);
+            numbers += i;
         }
 
-        let btn = e.target;
-        btn.classList.toggle("active-number");
+        e.target.classList.toggle("active-number");
     }
 
     const onMakeABetClick = async() => {
-        let numbers = chosenNumbers.join('');
-        console.log(numbers);
-        if(!containsOnlyNumbers(numbers) || chosenNumbers.length != MAX_PICK) return;
-        console.log("try");
+        if(numbers.length != MAX_PICK) return;
         try {
-            await $contract.methods.createBet(numbers).send({ value: 50000 });
-            let pricePool = await $contract.methods.getPriceSum().call();
-            console.log("price pool: " + pricePool); 
+            await $contract.methods.createBet(numbers).send({ value: $web3.utils.toWei('0.0001', 'ether') });
         } catch (error) {
             console.error(error);
         }
     }
-
-    const containsOnlyNumbers = (str) => {
-        return /^\d+$/.test(str);
-    }
-
 </script>
 
 <div>
     <div class="grid">  
-        {#each Array(25) as _, i}
-            <button class="grid-box" on:click={(e) => {onNumberPick(e, i)}}>{i}</button>
+        {#each Array(9) as _, i}
+            <button class="grid-box" on:click={(e) => {onNumberPick(e, i)}}>{i+1}</button>
         {/each}
     </div>
+    <p class="mt-md">{numbers}</p>
     <div class="center-h mt-md">
-        <button class="btn btn-green" on:click={onMakeABetClick}>Make a bet</button>
+        <button class="btn btn-green" on:click={onMakeABetClick}><h2>Make bet</h2></button>
     </div>
     
 </div>
@@ -54,8 +44,8 @@
     .grid {
         width: fit-content;
         display: grid;
-        grid-template-columns: repeat(5, auto);
-        grid-template-rows: repeat(5, auto);
+        grid-template-columns: repeat(3, auto);
+        grid-template-rows: repeat(3, auto);
         gap: .5rem;
     }
     .grid-box {
