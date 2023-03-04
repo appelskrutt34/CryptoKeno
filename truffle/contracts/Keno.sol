@@ -1,32 +1,53 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.19;
+pragma solidity >=0.8.19;
 
 contract Keno {
 
-	struct Player {
-		address payable better;
+	struct Bet {
+		address payable player;
+		uint round;
 		string numbers;
 	}
 
-	uint participation_fee = 50000;
-	uint price_sum;
-	Player[] players;
+	uint constant entry_fee = 0.0001 ether;
+	uint round = 0;
+	uint draw_count_down = 20;
+	uint price_pool = 0;
+
+	Bet[] bets;
+
+	event PricePoolUpdated(uint256 new_price, uint new_draw);
+	event drawEnded(string);
 
 	function createBet(string memory numbers) external payable {
-	 require(
-            msg.value == participation_fee,
-            "Keno: Value does not match participation fee"
+	 	require(
+            msg.value == entry_fee,
+            "Keno: Value does not match entry fee"
         );
+		require(draw_count_down >= 1, "can't bet while draw in progress");
+		
+		draw_count_down--;
+		bets.push(Bet(payable(msg.sender), round, numbers));
+		price_pool += msg.value;
 
-		players.push(Player(payable(msg.sender), numbers));
-		price_sum += msg.value;
+		emit PricePoolUpdated(price_pool, draw_count_down);
+
+		if(draw_count_down == 0) {
+			drawLotteryNumber();
+		} 
 	}
 
-	function getPriceSum() external view returns (uint) {
-		return price_sum;
+	function drawLotteryNumber() internal {
+		//TODO get random numbers from chainlink https://docs.chain.link/vrf/v2/direct-funding/examples/get-a-random-number
+		string memory numbers = "14823";
+
+		emit drawEnded(numbers);
 	}
 
-	function getPlayers() external view returns (Player[] memory) {
-		return players;
+	function getPricePool() external view returns (uint) {
+		return price_pool;
+	}
+	function getDrawCountDown() external view returns (uint) {	
+		return draw_count_down;
 	}
 }
