@@ -3,7 +3,7 @@
     import { web3, account, contract, pricePool,drawCountDown, winners} from "../stores/web3";
     import {getShortAddress} from "../helpers/helper";
     import  artifact  from "../contracts/Keno.json";
-  import Popup from "../components/Popup.svelte";
+    import Popup from "../components/Popup.svelte";
 
     let recentDraws = [];
 
@@ -21,6 +21,7 @@
                 getWinners();
                 listenForPricePoolUpdate();
                 listenForLotteryDraw();
+                listenForAccountsChange();        
             } catch (error) {
                 console.error(error);
             }
@@ -47,10 +48,18 @@
             recentDraws = recentDraws;
 
             getWinners();
+            setPricePool();
+            setDrawCountDown();
         })
         .on("error", function (error) {
             console.log(error);
         });
+    }
+
+    const listenForAccountsChange = () => {
+        window.ethereum.on('accountsChanged', function (accounts) {
+           $account = accounts[0];
+        })
     }
 
     const setPricePool = async() => {

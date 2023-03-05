@@ -15,7 +15,9 @@ contract Keno {
 		uint numbers;
 	}
 
-	uint64 constant entry_fee = 0.0001 ether;
+	address payable owner;
+	uint64 constant entry_fee = 0.001 ether;
+	uint64 constant chainlink_fee = 0.0003 ether;
 	uint8 draw_count_down = 2;
 	uint price_pool = 0;
 
@@ -25,16 +27,20 @@ contract Keno {
 	event pricePoolUpdated(uint new_price, uint8 new_draw);
 	event drawEnded(uint numbers, uint winner_count);
 
+	constructor() {
+		owner = payable(msg.sender);
+	}
+
 	function createBet(uint numbers) external payable {
 	 	require(
             msg.value == entry_fee,
-            "Keno: Value does not match entry fee"
+            "Value does not match entry fee"
         );
-		require(draw_count_down >= 1, "can't bet while draw in progress");
+		require(draw_count_down >= 1, "Can't bet while draw in progress");
 		
 		draw_count_down--;
 		bets.push(Bet(payable(msg.sender), numbers));
-		price_pool += msg.value;
+		price_pool += (msg.value - chainlink_fee);
 
 		emit pricePoolUpdated(price_pool, draw_count_down);
 
@@ -43,7 +49,7 @@ contract Keno {
 		}
 	}
 
-	function drawLotteryNumber() internal {
+	function drawLotteryNumber() private {
 		//TODO get random numbers from chainlink https://docs.chain.link/vrf/v2/direct-funding/examples/get-a-random-number
 
 		uint numbers = 14823;
@@ -62,8 +68,7 @@ contract Keno {
 
 			for (uint i = 0; i < bets.length; i++) { 
 				if(bets[i].numbers == numbers) {
-					// Transfer price to player
-					 (bool sent, bytes memory data) = bets[i].player.call{value: price_per_winner}("");
+					bets[i].player.transfer(price_per_winner);
 					winners.push(Winner({player: bets[i].player, date: date, price: price_per_winner, numbers: numbers}));
 				}
       		}
@@ -83,6 +88,19 @@ contract Keno {
 	}
 	function getDrawCountDown() external view returns (uint) {	
 		return draw_count_down;
+	}
+
+	function deposit () external payable {}
+
+	function withdraw(uint256 amount) external payable {
+		require(msg.sender == owner, "Not owner of contract");
+		require(address(this).balance >= amount, "Not enough balance");
+
+		owner.transfer(amount);
+	}
+
+	function isOwner() external view returns(bool){
+		return msg.sender == owner;
 	}
 
 	receive() external payable {}

@@ -20,7 +20,7 @@
         if(numbers.length != MAX_PICK) return;
 
         try {
-            await $contract.methods.createBet(parseInt(numbers)).send({ value: $web3.utils.toWei('0.0001', 'ether') });
+            await $contract.methods.createBet(parseInt(numbers)).send({ value: $web3.utils.toWei('0.001', 'ether') });
         } catch (error) {
             console.error(error);
         }
