@@ -13,13 +13,22 @@
                 <h1 style="font-weight: 800; font-size: 4rem; margin-right: .5rem;">{$pricePool}</h1><img src="/icons/ethereum.svg" width="35px" alt="">
             </div>
         </div>
-        <img src="/icons/divider.svg" width="150px" alt="">
+   
         <p class="mt-lg">Bets until next draw: <span style="font-weight: 800;">{$drawCountDown}</span> </p>
         <div class="center-h mt-md">
             <Keno/>
         </div>
+        
+       
+        
     </div>
 </div>
+
+<style>
+  
+  
+</style>
+
 
 
 

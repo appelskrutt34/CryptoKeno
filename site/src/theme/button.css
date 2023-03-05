@@ -1,6 +1,10 @@
 button:hover {
   filter: brightness(90%) !important;
 }
+button:disabled {
+  border: none;
+  filter: brightness(60%) !important;
+}
 
 .btn-green {
   color: white !important;
