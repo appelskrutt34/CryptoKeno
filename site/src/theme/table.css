@@ -1,0 +1,21 @@
+.cell {
+  text-align: center;
+  width: 13rem;
+}
+.address-cell {
+  text-align: center;
+  width: 25rem;
+}
+.table-header {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+.table-row {
+  padding: 1rem;
+  border-bottom: 1px solid var(--lightgray);
+}
+.table {
+  color: white;
+  border-radius: 1rem;
+  border: 1px solid var(--lightgray);
+}

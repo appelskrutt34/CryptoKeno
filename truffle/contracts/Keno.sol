@@ -16,8 +16,8 @@ contract Keno {
 	}
 
 	address payable owner;
-	uint64 constant entry_fee = 0.001 ether;
-	uint64 constant chainlink_fee = 0.0003 ether;
+	uint64 entry_fee = 0.005 ether;
+	uint64 chainlink_fee = 0.0003 ether;
 	uint8 draw_count_down = 2;
 	uint price_pool = 0;
 
@@ -89,11 +89,16 @@ contract Keno {
 	function getDrawCountDown() external view returns (uint) {	
 		return draw_count_down;
 	}
-
+	function getActiveBet() external view returns (Bet memory) {
+		for(uint i = 0; i < bets.length; i++){
+			if(bets[i].player == msg.sender) return bets[i];
+		}
+		Bet memory emptyBet;
+		return emptyBet;
+	}
 	function deposit () external payable {}
 
-	function withdraw(uint256 amount) external payable {
-		require(msg.sender == owner, "Not owner of contract");
+	function withdraw(uint256 amount) external payable onlyOwner {
 		require(address(this).balance >= amount, "Not enough balance");
 
 		owner.transfer(amount);
@@ -103,6 +108,23 @@ contract Keno {
 		return msg.sender == owner;
 	}
 
+	function changeEntryFee(uint64 amount) external onlyOwner {
+		entry_fee = amount;
+	} 
+	
+	function changeChainlinkFee(uint64 amount) external onlyOwner {
+		chainlink_fee = amount;
+	} 
+
+	function changeDrawCountDown(uint8 amount) external onlyOwner {
+		draw_count_down = amount;
+	} 
+
 	receive() external payable {}
     fallback() external payable {}
+
+	 modifier onlyOwner() {
+        require(msg.sender == owner, "Not owner");
+        _;
+    }
 }

@@ -1,5 +1,6 @@
 @import "./button.css";
 @import "./reset.css";
+@import "./table.css";
 
 * {
   --gray: rgb(23, 23, 23);

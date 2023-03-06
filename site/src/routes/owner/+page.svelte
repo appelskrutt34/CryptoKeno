@@ -5,7 +5,9 @@
      
     let deposit;
     let withdraw;
-    
+    let entryFee;
+    let chainlinkFee;
+
     onMount(async() => {
         let owner = await $contract.methods.isOwner().call();
         if(owner == false){
@@ -20,16 +22,34 @@
     const withdrawEth = async () => {
         await $contract.methods.withdraw($web3.utils.toWei(withdraw, 'ether')).send();
     }
+
+    const changeEntryFee = async () => {
+        await $contract.methods.withdraw($web3.utils.toWei(withdraw, 'ether')).send();
+    }
+
+    const changeChainlinkFee = async () => {
+        await $contract.methods.withdraw($web3.utils.toWei(withdraw, 'ether')).send();
+    }
 </script>
 
 <div class="container mt-lg">
-    <input type="number" bind:this={deposit}>
-    <button on:click={depositEth}>
+    <input class="form-control" type="number" bind:this={deposit} min="0">
+    <button  class="btn btn-secondary mt-sm" on:click={depositEth}>
         deposit
     </button>
-    
-    <input type="number" bind:this={withdraw}>
-    <button on:click={withdrawEth}>
+  
+    <input class="form-control mt-md" type="number" bind:this={withdraw} min="0">
+    <button class="btn btn-secondary mt-sm" on:click={withdrawEth}>
         withdraw
+    </button>
+
+    <input class="form-control mt-md" type="number" bind:this={entryFee} min="0">
+    <button class="btn btn-secondary mt-sm" on:click={changeEntryFee}>
+        change entry fee
+    </button>
+
+    <input class="form-control mt-md" type="number" bind:this={chainlinkFee} min="0">
+    <button class="btn btn-secondary mt-sm" on:click={changeChainlinkFee}>
+        change chainlink fee
     </button>
 </div>

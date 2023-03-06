@@ -1,12 +1,12 @@
 <script>
     import Web3  from "web3";
-    import { web3, account, contract, pricePool,drawCountDown, winners} from "../stores/web3";
+    import { web3, account, contract, pricePool,drawCountDown, winners, activeBet} from "../stores/web3";
     import {getShortAddress} from "../helpers/helper";
     import  artifact  from "../contracts/Keno.json";
     import Popup from "../components/Popup.svelte";
 
     let recentDraws = [];
-
+    
     const connect = async() => {
         if (window.ethereum) { 
             await window.ethereum.request({method: 'eth_requestAccounts'});    
@@ -15,9 +15,10 @@
             $account = accounts[0];
 
             try {
-                $contract = new $web3.eth.Contract( artifact.abi, artifact.networks[5777].address, { from: $account });
+                $contract = new $web3.eth.Contract( artifact.abi, artifact.networks[5777].address);
                 setPricePool();
                 setDrawCountDown();
+                setActiveBet();
                 getWinners();
                 listenForPricePoolUpdate();
                 listenForLotteryDraw();
@@ -36,7 +37,7 @@
             $drawCountDown = data.returnValues.new_draw;
         })
         .on("error", function (error) {
-            console.log(error);
+            console.error(error);
         });
     }
 
@@ -50,24 +51,29 @@
             getWinners();
             setPricePool();
             setDrawCountDown();
+            setActiveBet();
         })
         .on("error", function (error) {
-            console.log(error);
+            console.error(error);
         });
     }
 
     const listenForAccountsChange = () => {
         window.ethereum.on('accountsChanged', function (accounts) {
            $account = accounts[0];
+           setActiveBet();
         })
     }
 
     const setPricePool = async() => {
-        let priceInWei =await $contract.methods.getPricePool().call();
+        let priceInWei =await $contract.methods.getPricePool().call({from: $account});
         $pricePool = $web3.utils.fromWei(priceInWei, 'ether'); 
     }
     const setDrawCountDown = async () => {
-        $drawCountDown = await $contract.methods.getDrawCountDown().call();
+        $drawCountDown = await $contract.methods.getDrawCountDown().call({from: $account});
+    }
+    const setActiveBet = async () => {
+        $activeBet = await $contract.methods.getActiveBet().call({from: $account});
     }
     const getWinners = async () => {
         $winners = await $contract.methods.getWinners().call();
@@ -90,7 +96,7 @@
                 <a class="link" href="/winners">Winners</a>
             </div>
             <div class="col-sm-auto" style="display: flex; justify-content: end;">{#if $account}
-                <p>{getShortAddress($account)}</p>
+                <p>{getShortAddress($account)} <span style="background-color: var(--green3); height: 15px !important; width: 15px;  border-radius: 50%; display: inline-block; margin-left: .5rem"></span></p>
             {:else}
                 <button on:click={connect} class="btn btn-primary">Connect wallet<img src="/MetaMask_Fox.svg.png" alt="" width="25xp"> </button>
             {/if}</div>
