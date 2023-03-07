@@ -32,10 +32,6 @@
         </div>
     </div>
 </div>
-{:else}
-<div class="container center-h" style="margin-top: 10rem" >
-    <h1>Connect to meta mask to play</h1>
-</div>
 {/if}
 <style>
 </style>

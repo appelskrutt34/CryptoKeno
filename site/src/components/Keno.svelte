@@ -65,8 +65,6 @@
             <p class="cell">{$activeBet.numbers}</p>
         </div>
     </div>
-
-
     {/if}
 </div>
 

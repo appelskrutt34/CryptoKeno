@@ -6,7 +6,7 @@
     import Popup from "../components/Popup.svelte";
 
     let recentDraws = [];
-    
+
     const connect = async() => {
         if (window.ethereum) { 
             await window.ethereum.request({method: 'eth_requestAccounts'});    
@@ -90,25 +90,41 @@
 
 <nav style="color: white;">
     <div class="container">
-        <div class="row justify-content-between" style="padding: 1rem 0">
-            <div class="col-sm-auto direction-row">
-                <a class="link" href="/">Keno</a>
-                <a class="link" href="/winners">Winners</a>
+        <div>
+            <div class="direction-row" style="padding: .8rem 0">
+                <div class="center-v">
+                    <a class="link" href="/">Keno</a>
+                </div>
+                <div class="center-v">
+                    <a class="link" href="/winners">Winners</a>
+                </div>  
+                <div style="display: flex; justify-content: end; width: 100%">{#if $account}
+                    <p>{getShortAddress($account)} <span style="background-color: var(--green3); height: 15px !important; width: 15px;  border-radius: 50%; display: inline-block; margin-left: .5rem"></span></p>
+                {/if}</div>
             </div>
-            <div class="col-sm-auto" style="display: flex; justify-content: end;">{#if $account}
-                <p>{getShortAddress($account)} <span style="background-color: var(--green3); height: 15px !important; width: 15px;  border-radius: 50%; display: inline-block; margin-left: .5rem"></span></p>
-            {:else}
-                <button on:click={connect} class="btn btn-primary">Connect wallet<img src="/MetaMask_Fox.svg.png" alt="" width="25xp"> </button>
-            {/if}</div>
+            
         </div>
       </div>
 </nav>
 
+{#if $account}
 <slot />
+{:else}
+<div class="container" style="margin-top: 8rem; text-align: center;">
+    <h1>Connect your MetaMask wallet to play</h1>
+    <button on:click={connect} class="btn btn-primary mt-lg">Connect Wallet <img src="/MetaMask_Fox.svg.png" alt="" width="25xp"> </button>
+</div>
+   
+{/if}
+
 
 <style global>
 @import '../theme/app.css';
 
+nav {
+    background-color: rgb(29, 29, 29);
+    box-shadow: 0px 8px 8px rgba(0, 0, 0, .10);
+}
 .link {
     margin-right: 1rem;
   text-decoration: none;
